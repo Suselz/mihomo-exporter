@@ -35,18 +35,20 @@ This keeps exporter code and dashboard assets separated for clean GitHub publish
   - `mihomo_total_download_bytes_total`
 - Active connection gauges by client/outbound and total.
 - Exporter health and quality metrics.
+- Additional Mihomo API metrics from `/memory`, `/traffic`, `/version`, `/proxies`, `/rules`.
 
 ## Configuration
 
 Environment variables:
 
-- `MIHOMO_URL` (default `http://192.168.0.1:9090`)
+- `MIHOMO_URL` (default `http://192.168.0.1::9090`)
 - `MIHOMO_CONNECTIONS_PATH` (default `/connections`)
 - `EXPORTER_LISTEN_ADDR` (default `:9109`)
 - `EXPORTER_METRICS_PATH` (default `/metrics`)
 - `EXPORTER_SCRAPE_INTERVAL` (default `2s`)
 - `EXPORTER_MAX_CLIENT_SERIES` (default `2000`)
 - `EXPORTER_CLIENT_ALLOW_CIDRS` (optional, comma separated CIDR allowlist)
+- `EXPORTER_LOG_LEVEL` (default `info`, values: `debug|info|warn|error`)
 
 ## Run locally
 
@@ -128,8 +130,50 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
+## Additional collected metrics
+
+From `/memory`:
+
+- `mihomo_memory_inuse_bytes`
+- `mihomo_memory_oslimit_bytes`
+
+From `/traffic`:
+
+- `mihomo_traffic_up_bytes_per_second`
+- `mihomo_traffic_down_bytes_per_second`
+- `mihomo_traffic_upload_total_bytes`
+- `mihomo_traffic_download_total_bytes`
+
+From `/version`:
+
+- `mihomo_version_info{version,meta}`
+
+From `/proxies`:
+
+- `mihomo_proxies_total`
+- `mihomo_proxies_alive_total`
+- `mihomo_proxies_by_type{type}`
+
+From `/rules`:
+
+- `mihomo_rules_total`
+- `mihomo_rules_disabled_total`
+- `mihomo_rules_hits`
+- `mihomo_rules_misses`
+- `mihomo_rules_by_type{type}`
+
 ## Notes on data model
 
 - Exporter polls `/connections` on interval and computes positive deltas.
+- Exporter also polls `/memory`, `/traffic`, `/version`, `/proxies`, `/rules` each interval.
 - Negative deltas are treated as resets and not added to counters.
 - For outbound attribution, only `chains[0]` is used by design.
+
+## Logging
+
+Log levels are controlled by `EXPORTER_LOG_LEVEL`:
+
+- `debug`: startup, scrape success details, health endpoint hits
+- `info`: lifecycle events (start/stop, effective config)
+- `warn`: scrape anomalies (negative deltas/resets)
+- `error`: scrape/HTTP server/shutdown errors

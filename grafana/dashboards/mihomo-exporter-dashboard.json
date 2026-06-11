@@ -15,23 +15,46 @@
       ]
     },
     {
+      "type": "timeseries",
+      "title": "Realtime Traffic API (B/s)",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "targets": [
+        {"expr": "mihomo_traffic_down_bytes_per_second", "legendFormat": "down"},
+        {"expr": "mihomo_traffic_up_bytes_per_second", "legendFormat": "up"}
+      ]
+    },
+    {
       "type": "stat",
       "title": "Active Connections",
-      "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0},
+      "gridPos": {"h": 6, "w": 6, "x": 0, "y": 8},
       "targets": [{"expr": "mihomo_connections_total"}],
       "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "orientation": "auto", "textMode": "auto", "colorMode": "value"}
     },
     {
       "type": "stat",
-      "title": "Scrape Success",
-      "gridPos": {"h": 8, "w": 6, "x": 18, "y": 0},
-      "targets": [{"expr": "mihomo_exporter_scrape_success"}],
+      "title": "Memory Inuse",
+      "gridPos": {"h": 6, "w": 6, "x": 6, "y": 8},
+      "targets": [{"expr": "mihomo_memory_inuse_bytes"}],
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []}
+    },
+    {
+      "type": "stat",
+      "title": "Alive Proxies",
+      "gridPos": {"h": 6, "w": 6, "x": 12, "y": 8},
+      "targets": [{"expr": "mihomo_proxies_alive_total"}],
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "orientation": "auto", "textMode": "auto", "colorMode": "value"}
+    },
+    {
+      "type": "stat",
+      "title": "Rules Total",
+      "gridPos": {"h": 6, "w": 6, "x": 18, "y": 8},
+      "targets": [{"expr": "mihomo_rules_total"}],
       "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "orientation": "auto", "textMode": "auto", "colorMode": "value"}
     },
     {
       "type": "timeseries",
       "title": "Top Clients Download Rate",
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
       "targets": [
         {"expr": "topk(10, sum by (client_ip) (rate(mihomo_client_download_bytes_total[5m])))", "legendFormat": "{{client_ip}}"}
       ]
@@ -39,7 +62,7 @@
     {
       "type": "timeseries",
       "title": "Top Clients Upload Rate",
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
       "targets": [
         {"expr": "topk(10, sum by (client_ip) (rate(mihomo_client_upload_bytes_total[5m])))", "legendFormat": "{{client_ip}}"}
       ]
@@ -47,7 +70,7 @@
     {
       "type": "timeseries",
       "title": "Outbound Download Rate",
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 22},
       "targets": [
         {"expr": "sum by (outbound) (rate(mihomo_outbound_download_bytes_total[5m]))", "legendFormat": "{{outbound}}"}
       ]
@@ -55,15 +78,33 @@
     {
       "type": "timeseries",
       "title": "Outbound Upload Rate",
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 22},
       "targets": [
         {"expr": "sum by (outbound) (rate(mihomo_outbound_upload_bytes_total[5m]))", "legendFormat": "{{outbound}}"}
       ]
     },
     {
       "type": "timeseries",
+      "title": "Proxy Count by Type",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 30},
+      "targets": [
+        {"expr": "mihomo_proxies_by_type", "legendFormat": "{{type}}"}
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Rule Counters",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 30},
+      "targets": [
+        {"expr": "mihomo_rules_hits", "legendFormat": "hits"},
+        {"expr": "mihomo_rules_misses", "legendFormat": "misses"},
+        {"expr": "mihomo_rules_disabled_total", "legendFormat": "disabled"}
+      ]
+    },
+    {
+      "type": "timeseries",
       "title": "Exporter Errors",
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 38},
       "targets": [
         {"expr": "rate(mihomo_exporter_parse_errors_total[5m])", "legendFormat": "parse_errors/s"},
         {"expr": "rate(mihomo_exporter_negative_delta_total[5m])", "legendFormat": "negative_delta/s"},
@@ -73,7 +114,7 @@
     {
       "type": "timeseries",
       "title": "Series Cardinality",
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 38},
       "targets": [
         {"expr": "mihomo_exporter_tracked_clients", "legendFormat": "clients"},
         {"expr": "mihomo_exporter_tracked_outbounds", "legendFormat": "outbounds"}
@@ -90,6 +131,6 @@
   "timezone": "",
   "title": "Mihomo Exporter",
   "uid": "mihomo-exporter",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }

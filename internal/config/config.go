@@ -17,15 +17,17 @@ type Config struct {
 	ScrapeInterval  time.Duration
 	MaxClientSeries int
 	ClientAllowed   []*net.IPNet
+	LogLevel        string
 }
 
 func Load() (Config, error) {
 	cfg := Config{
-		BaseURL:         getenv("MIHOMO_URL", "http://10.66.0.2:9090"),
+		BaseURL:         getenv("MIHOMO_URL", "http://192.168.0.1::9090"),
 		ConnectionsPath: getenv("MIHOMO_CONNECTIONS_PATH", "/connections"),
 		ListenAddr:      getenv("EXPORTER_LISTEN_ADDR", ":9109"),
 		MetricsPath:     getenv("EXPORTER_METRICS_PATH", "/metrics"),
 		MaxClientSeries: getenvInt("EXPORTER_MAX_CLIENT_SERIES", 2000),
+		LogLevel:        getenv("EXPORTER_LOG_LEVEL", "info"),
 	}
 
 	interval, err := time.ParseDuration(getenv("EXPORTER_SCRAPE_INTERVAL", "2s"))
