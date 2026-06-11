@@ -11,9 +11,10 @@ FROM gcr.io/distroless/static-debian12:nonroot
 ENV EXPORTER_LISTEN_ADDR=:9109 \
     EXPORTER_METRICS_PATH=/metrics \
     EXPORTER_SCRAPE_INTERVAL=2s \
-    MIHOMO_URL=http://192.168.0.1:9090 \
+    MIHOMO_URL=http://192.168.0.1::9090 \
     MIHOMO_CONNECTIONS_PATH=/connections \
-    EXPORTER_MAX_CLIENT_SERIES=2000
+    EXPORTER_MAX_CLIENT_SERIES=2000 \
+    EXPORTER_LOG_LEVEL=info
 COPY --from=builder /out/mihomo-exporter /mihomo-exporter
 EXPOSE 9109
 ENTRYPOINT ["/mihomo-exporter"]

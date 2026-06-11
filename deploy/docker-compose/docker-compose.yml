@@ -1,16 +1,20 @@
 services:
   mihomo-exporter:
-    build:
-      context: ../..
-      dockerfile: Dockerfile
-    container_name: mihomo-exporter
+    image: ghcr.io/suselz/mihomo-exporter:latest
     restart: unless-stopped
     environment:
-      MIHOMO_URL: http://10.66.0.2:9090
+      MIHOMO_URL: http://192.168.0.1:9090
       MIHOMO_CONNECTIONS_PATH: /connections
       EXPORTER_LISTEN_ADDR: :9109
       EXPORTER_METRICS_PATH: /metrics
       EXPORTER_SCRAPE_INTERVAL: 2s
       EXPORTER_MAX_CLIENT_SERIES: 2000
+      EXPORTER_LOG_LEVEL: info
     ports:
       - "9109:9109"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:9109/readyz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
